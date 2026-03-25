@@ -12,10 +12,20 @@ This is a simple python script that I made.
 It completes Wocabee using selenium.  
 Has a tkinter UI.  
 # Usage
+!!! Before running, run in Windows CMD:  
+
+    pip install selenium webdriver-manager
+or 
+
+    python -m pip install selenium webdriver-manager
 1. Open the file  
    If you wnt to gain points, open Points.py  
-   if you want to camplete courses, open Wocabee-bot.py  
+   if you want to complete courses, open Wocabee-bot.py 
+
 2. Enter your login credentials.
+
 3. Choose a class.
+
 4. Click "Start"
+
    (When the bot runs, you can leave it running in the background, but DON'T minimize it, just open apps in front.)
