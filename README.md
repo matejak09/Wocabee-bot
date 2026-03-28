@@ -14,12 +14,11 @@ Has a tkinter UI.
 # Usage
 !!! Before running, run in Windows CMD:  
 
-    pip install selenium webdriver-manager
-or 
-
     python -m pip install selenium webdriver-manager
+or  
+[Run this script](./Imports.cmd)
 1. Open the file  
-   If you wnt to gain points, open Points.py  
+   If you want to gain points, open Points.py  
    if you want to complete courses, open Wocabee-bot.py 
 
 2. Enter your login credentials.
