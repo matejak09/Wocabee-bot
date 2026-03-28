@@ -468,16 +468,8 @@ while True:
         continue
     else:
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
+            while True:
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "continueBtn"))).click()
         except:
             pass
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "backBtn"))).click()
