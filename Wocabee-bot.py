@@ -37,6 +37,7 @@ def dalej_na_balik():
     global meno, heslo, driver
     meno = entry_meno.get()
     heslo = entry_heslo.get()
+    print("Meno:", meno)
 
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()),
@@ -146,12 +147,12 @@ start_main_gui()
 
 
 # Results
-try:
-    print("Package name:", vybrany_balik)
-except Exception:
-    print("No selected package")
-if začatý_balík:
-    print("Selected package is already started")
+# try:
+#     print("Package name:", vybrany_balik)
+# except Exception:
+#     print("No selected package")
+# if začatý_balík:
+#     print("Selected package is already started")
     
 
 def zisti_slovíčka_normálne():
@@ -168,7 +169,7 @@ def zisti_slovíčka_normálne():
         číslo = int(cislo)
     except Exception:
         číslo = 0
-    print("Počet slovíčok v balíku:", číslo)
+    # print("Počet slovíčok v balíku:", číslo)
     predosle_slovo = ""
     for i in range(číslo):
 
@@ -189,7 +190,7 @@ def zisti_slovíčka_normálne():
         except:
             time.sleep(0.4)
             break
-    print(json.dumps(slovnik, indent=4, ensure_ascii=False))
+    # print(json.dumps(slovnik, indent=4, ensure_ascii=False))
 
 
 def zisti_slovíčka_začatého():
@@ -202,7 +203,7 @@ def zisti_slovíčka_začatého():
     počet = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "wordCount")))
     cislo = počet.text.strip()
     číslo = int(cislo)
-    print("Počet slovíčok v balíku:", číslo)
+    # print("Počet slovíčok v balíku:", číslo)
     predosle_slovo = ""
     for i in range(číslo):
 
@@ -226,7 +227,7 @@ def zisti_slovíčka_začatého():
             button.click()
             button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "showMorePackagesBtn")))
             button.click()
-    print(json.dumps(slovnik, indent=4, ensure_ascii=False))
+    # print(json.dumps(slovnik, indent=4, ensure_ascii=False))
     time.sleep(1)
     baliky_mena.clear()
     baliky_spustit.clear()
