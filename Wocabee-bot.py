@@ -31,7 +31,6 @@ slovnik = {}
 vybrany_balik_el = None
 nový_balík = False
 
-
 def dalej_na_balik():
     frame_login.pack_forget()
     global meno, heslo, driver
@@ -194,7 +193,7 @@ def zisti_slovíčka_normálne():
 
 
 def zisti_slovíčka_začatého():
-    global slovnik, vybrany_balik_el, riadok
+    global slovnik, vybrany_balik_el, riadok, predošlý_názov
     driver.execute_script("arguments[0].scrollIntoView();", vybrany_balik_el)
     button = WebDriverWait(riadok, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "intro-icon")))
     button.click()
@@ -243,8 +242,7 @@ def zisti_slovíčka_začatého():
             baliky_mena.remove(b)
 
     vybrany_balik_el = baliky_spustit[0]
-    vybrany_balik1 = baliky_mena[0]
-    predošlý_názov = vybrany_balik1
+    predošlý_názov = baliky_mena[0]
     driver.execute_script("arguments[0].scrollIntoView();", vybrany_balik_el)
     vybrany_balik_el.click()
 
