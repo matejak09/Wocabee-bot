@@ -394,6 +394,7 @@ while True:
             if spravne == slovicka[i]:
                 elementy[i].click()
     elif zadanie == "pexeso":
+        time.sleep(0.5)
         pq_words = driver.find_element(By.ID, "pq_words")
         elementy1 = pq_words.find_elements(By.CSS_SELECTOR, "div.pexesoCardWrapper.pexesoWord")
         karty1 = pq_words.find_elements(By.CSS_SELECTOR, "div.pexesoCard.pexesoBack.btn.btn-info.btn-block ")
