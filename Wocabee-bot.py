@@ -13,7 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 
 options = Options()
-options.add_argument("--log-level=3")  # skryje error/warning logy
+options.add_argument("--log-level=3")  # hide error/warning logs
 
 # Globálne premenné
 gulicky = 0
@@ -28,6 +28,7 @@ driver = None
 začatý_balík = False
 riadok = None
 slovnik = {}
+obrazky = {}
 vybrany_balik_el = None
 nový_balík = False
 
@@ -184,6 +185,12 @@ def zisti_slovíčka_normálne():
         slovnik[value] = key
         predosle_slovo = key
         try:
+            obrazok = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "pictureThumbnail")))
+            obrazok = obrazok.get_attribute("src")
+            obrazky[key] = obrazok
+            obrazky[obrazok] = key
+        except: continue
+        try:
             button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "introNext")))
             button.click()
         except:
@@ -217,6 +224,11 @@ def zisti_slovíčka_začatého():
         slovnik[key] = value
         slovnik[value] = key
         predosle_slovo = key
+        try:
+            obrazok = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "pictureThumbnail")))
+            obrazky[key] = obrazok.get_attribute("src")
+            obrazky[value] = obrazok.get_attribute("src")
+        except: continue
         try:
             button = driver.find_element(By.ID, "rightArrow")
             button.click()
@@ -254,18 +266,10 @@ if začatý_balík == False:
 else:
     zisti_slovíčka_začatého()
 
-def find_visible_element():
-    global elements
-    for i in range(9999):
-        time.sleep(0.01)
-        for el in elements:
-            if el.is_displayed():
-                return el
-
 while True:
     elements = driver.find_elements(By.CLASS_NAME, "methodDesc")
     visible_element = None
-    visible_element = find_visible_element() 
+    visible_element = WebDriverWait(driver, 10).until(lambda d: next((el for el in elements if el.is_displayed()), False))
     if visible_element:
         parent = visible_element.find_element(By.XPATH, "..")
         zadanie = parent.get_attribute("id")
@@ -290,15 +294,19 @@ while True:
         input_el.send_keys(treba_doplnit)
         input_el.send_keys(Keys.ENTER)
     elif zadanie == "describePicture":
+        obrazok = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "describePictureImg")))
+        obrazok = obrazok.get_attribute("src")
+        preklad = slovnik.get(obrazky.get(obrazok))
         input_el = driver.find_element(By.ID, "describePictureAnswer")
-        input_el.send_keys("abc")
-        button = driver.find_element(By.ID, "describePictureSubmitBtn")
-        button.click()
-        button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "incorrect-next-button")))
-        button.click()
+        input_el.clear()
+        input_el.send_keys(preklad)
+        input_el.send_keys(Keys.ENTER)
     elif zadanie == "arrangeWords":
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "arrangeWordsSubmitBtn"))).click()
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "incorrect-next-button"))).click()
+        try:
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "incorrect-next-button"))).click()
+        except:
+            pass
     elif zadanie == "choosePicture":
         slv = driver.find_element(By.ID, "choosePictureWord")
         slovo = slv.text.strip()
@@ -367,7 +375,6 @@ while True:
                     element.click()   
                     break
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button#completeWordSubmitBtn.btn.btn-lg.btn-secondary.btn-block"))).click()
-    
     elif zadanie == "chooseWord":
         slovicka = []
         slv = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "ch_word")))
@@ -461,6 +468,8 @@ while True:
         input_element.send_keys(Keys.ENTER)
     elif driver.find_element(By.ID, "incorrect-next-button").is_displayed():
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "incorrect-next-button"))).click()
+
+    
     percentá_el = driver.find_element(By.ID,"progressValue")
     percenta = percentá_el.text.strip()
     percentá = int(percenta.replace("%", ""))
@@ -506,6 +515,8 @@ while True:
             except:
                 začatý_balík = False
             vybrany_balik_el = balik_na_spustenie
+            slovnik.clear()
+            obrazky.clear()
 
             if začatý_balík == False:
                 zisti_slovíčka_normálne()
