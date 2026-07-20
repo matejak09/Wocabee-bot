@@ -52,12 +52,13 @@ def dalej_na_balik():
     input_element.send_keys(heslo)
     input_element.send_keys(Keys.ENTER)
     heslo = "*" * len(heslo)
-    time.sleep(0.5)
+    time.sleep(5)
 
     nazvy_tried = []
-    triedy = driver.find_elements(By.CSS_SELECTOR, ".btn.btn-lg.btn-wocagrey.btn-block")
+    tabulka = driver.find_element(By.ID, "listOfClasses")
+    triedy = tabulka.find_elements(By.CLASS_NAME, "class-card-link")
     for trie in triedy:
-        a = trie.find_element(By.TAG_NAME, "span")
+        a = trie.find_element(By.CLASS_NAME, "class-name")
         nazvy_tried.append(a.text.strip())
 
     frame_trieda = tk.Frame(root)
@@ -236,8 +237,12 @@ def zisti_slovíčka_začatého():
         except:
             button = driver.find_element(By.ID, "backBtn")
             button.click()
-            button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "showMorePackagesBtn")))
-            button.click()
+            try:
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "showMorePackagesBtn")))
+                driver.execute_script("arguments[0].scrollIntoView();", button)
+                button.click()
+            except:
+                pass
     # print(json.dumps(slovnik, indent=4, ensure_ascii=False))
     time.sleep(1)
     baliky_mena.clear()
@@ -485,7 +490,12 @@ while True:
         time.sleep(1)
         baliky_mena.clear()
         baliky_spustit.clear()
-        driver.find_element(By.ID, "showMorePackagesBtn").click()
+        try:
+            button = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "showMorePackagesBtn")))
+            driver.execute_script("arguments[0].scrollIntoView();", button)
+            button.click()
+        except:
+            continue
         time.sleep(0.5)
         try:
             balik_na_spustenie = driver.find_element(By.CLASS_NAME, "package")
@@ -524,9 +534,8 @@ while True:
                 zisti_slovíčka_začatého()
             gulicky = 0
         elif balik_na_spustenie_názov == vybrany_balik:
-            gulicky += 1
-            prázdne = 3 - gulicky
-            print(f"{balik_na_spustenie_názov}: {'●'*gulicky}{'○'*prázdne}")
+            prázdne = len(riadok.find_elements(By.CSS_SELECTOR, "div.custom-icon.circle-todo"))
+            print(f"{balik_na_spustenie_názov}: {'●'*(3-prázdne)}{'○'*prázdne}")
             predošlý_názov = balik_na_spustenie_názov
             driver.execute_script("arguments[0].scrollIntoView();", balik_na_spustenie)
             balik_na_spustenie.click()
