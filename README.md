@@ -1,6 +1,6 @@
 #   Wocabee-bot  
 This is simpe bot that automates makes wocabee for you using selenium.
-# STATUS: 🟢
+# STATUS: 🟡
 🟢 = Working  
 🟡 = Update in progress  
 🔴 = Not working  
