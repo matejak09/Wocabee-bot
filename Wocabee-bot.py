@@ -307,11 +307,39 @@ while True:
         input_el.send_keys(preklad)
         input_el.send_keys(Keys.ENTER)
     elif zadanie == "arrangeWords":
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "arrangeWordsSubmitBtn"))).click()
-        try:
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "incorrect-next-button"))).click()
-        except:
-            pass
+        zadanie_veta = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "def-lang-sentence"))).text.strip()
+        print(f"Zadanie: {zadanie_veta}")
+        preklad_veta = (slovnik.get(zadanie_veta)).split()
+        print(f"Preklad: {preklad_veta}")
+        driver.execute_script("""
+        const container = document.getElementById('sortableWords');
+        const targetOrder = Array.from(arguments);
+        let lastInsertedEl = null;
+        targetOrder.forEach((word, index) => {
+            const el = Array.from(container.children).find(child => 
+                child.getAttribute('word') === word && !child.dataset.processed
+            );
+            if (el) {
+                el.dataset.processed = "true"; // Označíme ho ako vybavený
+                if (index === 0) {
+                    container.insertBefore(el, container.firstChild);
+                } else if (lastInsertedEl) {
+                    container.insertBefore(el, lastInsertedEl.nextSibling);
+                }
+                lastInsertedEl = el;
+            }
+        });
+        Array.from(container.children).forEach(child => delete child.dataset.processed);
+        const bodka = document.getElementById('static-punctuation');
+        if (bodka) {
+            container.appendChild(bodka);
+        }
+        if (typeof $ !== 'undefined') {
+            $(container).trigger('sortupdate');
+            $(container).trigger('change');
+        }
+        """, *preklad_veta)
+        driver.find_element(By.ID, "arrangeWordsSubmitBtn").click()
     elif zadanie == "choosePicture":
         slv = driver.find_element(By.ID, "choosePictureWord")
         slovo = slv.text.strip()
