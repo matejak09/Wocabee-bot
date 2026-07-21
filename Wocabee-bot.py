@@ -29,6 +29,7 @@ začatý_balík = False
 riadok = None
 slovnik = {}
 obrazky = {}
+obrazky2 = {}
 vybrany_balik_el = None
 nový_balík = False
 
@@ -186,10 +187,13 @@ def zisti_slovíčka_normálne():
         slovnik[value] = key
         predosle_slovo = key
         try:
-            obrazok = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "pictureThumbnail")))
-            obrazok = obrazok.get_attribute("src")
-            obrazky[key] = obrazok
-            obrazky[obrazok] = key
+            obrazok = WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.ID, "pictureThumbnail")))
+            if obrazok.is_displayed():
+                obrazok = obrazok.get_attribute("src")
+                obrazky[key] = obrazok
+                obrazky[value] = obrazok
+                obrazky[obrazok] = key
+                obrazky2[obrazok] = value
         except: continue
         try:
             button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "introNext")))
@@ -227,8 +231,12 @@ def zisti_slovíčka_začatého():
         predosle_slovo = key
         try:
             obrazok = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "pictureThumbnail")))
-            obrazky[key] = obrazok.get_attribute("src")
-            obrazky[value] = obrazok.get_attribute("src")
+            if obrazok.is_displayed():
+                obrazok = obrazok.get_attribute("src")
+                obrazky[key] = obrazok
+                obrazky[obrazok] = key
+                obrazky[value] = obrazok
+                obrazky2[obrazok] = value
         except: continue
         try:
             button = driver.find_element(By.ID, "rightArrow")
@@ -301,7 +309,11 @@ while True:
     elif zadanie == "describePicture":
         obrazok = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "describePictureImg")))
         obrazok = obrazok.get_attribute("src")
-        preklad = slovnik.get(obrazky.get(obrazok))
+        if obrazok in obrazky:
+            preklad = obrazky.get(obrazok)
+        else:
+            preklad = obrazky2.get(obrazok)
+        preklad = slovnik.get(preklad)
         input_el = driver.find_element(By.ID, "describePictureAnswer")
         input_el.clear()
         input_el.send_keys(preklad)
@@ -523,10 +535,10 @@ while True:
             driver.execute_script("arguments[0].scrollIntoView();", button)
             button.click()
         except:
-            continue
+            pass
         time.sleep(0.5)
         try:
-            balik_na_spustenie = driver.find_element(By.CLASS_NAME, "package")
+            balik_na_spustenie = driver.find_element(By.CLASS_NAME, "package ")
         except:
             gulicky = 3
             print(f"{predošlý_názov}: {'●'*gulicky}")
